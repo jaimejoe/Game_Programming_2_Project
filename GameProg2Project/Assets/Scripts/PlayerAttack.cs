@@ -1,83 +1,77 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 
-public enum ComboState
-{
-    NONE,
-    PUNCH_1,
-    PUNCH_2,
-    FLYING_KICK
-}
 public class PlayerAttack : MonoBehaviour
 {
     private Animator anim;
-    public float cooldownTime = 2f;
-    public static int noOfClicks = 0;
-    private float nextFireTime = 0f;
-    float lastClickedTime = 0;
+    public float cooldownTime = 1f;
+    public int noOfClicks = 0;
+    float lastClickedTime;
     float maxComboDelay = 1;
-    void Awake()
+    private bool comboContinue = false;
+    private float cooldownEnd = 0f;
+
+
+    void Start()
     {
         anim = GetComponent<Animator>();
     }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
     void Update()
     {
-        if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f && anim.GetCurrentAnimatorStateInfo(0).IsName("Punch1"))
+        if (Input.GetMouseButtonDown(0))
         {
-            anim.SetBool("Punch1", false);
+            Combo();
         }
-        if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f && anim.GetCurrentAnimatorStateInfo(0).IsName("Punch2"))
-        {
-            anim.SetBool("Punch2", false);
-        }
-        if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f && anim.GetCurrentAnimatorStateInfo(0).IsName("FlyingKick"))
-        {
-            anim.SetBool("FlyingKick", false);
-            noOfClicks = 0;
-        }
-
         if (Time.time - lastClickedTime > maxComboDelay)
         {
             noOfClicks = 0;
         }
-
-        if (Time.time > nextFireTime)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                OnClick();
-            }
-        }
-
-        void OnClick()
-        {
-            lastClickedTime = Time.time;
-            noOfClicks++;
-            if (noOfClicks == 1)
-            {
-                anim.SetBool("Punch1", true);
-            }
-            noOfClicks = Mathf.Clamp(noOfClicks, 0, 3);
-
-            if (noOfClicks >= 2 && anim.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f && anim.GetCurrentAnimatorStateInfo(0).IsName("Punch1"))
-            {
-                anim.SetBool("Punch1", false);
-                anim.SetBool("Punch2", true);
-            }
-
-            if (noOfClicks >= 3 && anim.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f && anim.GetCurrentAnimatorStateInfo(0).IsName("Punch2"))
-            {
-                anim.SetBool("Punch2", false);
-                anim.SetBool("FlyingKick", true);
-            }
-        }
     }
+
+    void Combo()
+    {
+        lastClickedTime = Time.time;
+
+        if (Time.time < cooldownEnd)
+            return;
+
+        if (noOfClicks == 0)
+        {
+            noOfClicks = 1;
+            comboContinue = false;
+            anim.Play("Punch1", 0, 0f);
+            return;
+        }
+
+        if (!comboContinue)
+            return;  
+
+        comboContinue = false; 
+        noOfClicks++;
+
+        if (noOfClicks == 2)
+        {
+            anim.Play("Punch2", 0, 0f);
+        }
+        else if (noOfClicks == 3)
+        {
+            anim.Play("FlyingKick", 0, 0f);
+        }
+
+        if (noOfClicks >= 3)
+        {
+            noOfClicks = 0;
+            cooldownEnd = Time.time + cooldownTime;
+        }
+
+    }
+
+    public void ComboWindow()
+    {
+        comboContinue = true;
+    }
+
 }
+
