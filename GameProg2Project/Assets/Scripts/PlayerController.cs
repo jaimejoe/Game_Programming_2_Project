@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Settings")]
     [SerializeField] private float baseWalkSpeed = 5f;    // Base speed when walking
 
-    [SerializeField] private float rotationSpeed = 10f;   // Speed at which the character rotates
+    [SerializeField] private float rotationSpeed = 15f;   // Speed at which the character rotates
 
     // ============================== Jump Settings =================================
     [Header("Jump Settings")]
@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
     // Input variables
     private float moveX; // Stores horizontal movement input (A/D or Left/Right Arrow)
     private float moveZ; // Stores vertical movement input (W/S or Up/Down Arrow)
+    private float rotationY = -90f;
     private bool jumpRequest; // Flag to check if the player requested a jump
     private Vector3 moveDirection; // Stores the calculated movement direction
 
@@ -171,11 +172,13 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void RotateCharacter()
     {
-        // Rotate only if the character is moving
-        if (moveDirection.sqrMagnitude > 0.01f)
+        if (Input.GetAxis("Horizontal") > 0f)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
-            rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
+            transform.rotation = Quaternion.Euler(0f, 90f, 0f);
+        }
+        else if (Input.GetAxis("Horizontal") < 0f)
+        {
+            transform.rotation = Quaternion.Euler(0f, -90f, 0f);
         }
     }
 
