@@ -21,7 +21,6 @@ public class EnemyController : MonoBehaviour
     {
         if (enemyHealth != null)
         {
-            enemyHealth.TakeDamage(20);
             animator.SetTrigger("GotHit");
         }
     }

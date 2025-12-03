@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 public class EnemyHealth : MonoBehaviour
 {
@@ -10,8 +9,6 @@ public class EnemyHealth : MonoBehaviour
     void Start()
     {
         currentHealth = maxHealth;
-        //healthBar.maxValue = maxHealth;
-        //healthBar.value = currentHealth;
     }
 
     public void TakeDamage(int damage)
