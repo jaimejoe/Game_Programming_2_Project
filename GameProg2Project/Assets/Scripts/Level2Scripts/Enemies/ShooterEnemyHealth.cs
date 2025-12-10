@@ -41,4 +41,9 @@ public class ShooterEnemyHealth : MonoBehaviour
         rb.freezeRotation = false;
 
     }
+    public int GetHealth()
+    {
+        //Debug.Log(HP);
+        return HP;
+    }
 }

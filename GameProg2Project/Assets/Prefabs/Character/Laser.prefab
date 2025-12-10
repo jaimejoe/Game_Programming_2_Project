@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 4470475994234251336}
   - component: {fileID: 859218147946206305}
   - component: {fileID: 40541520737225790}
-  - component: {fileID: 3549830451547064745}
   - component: {fileID: -2316277546622288330}
+  - component: {fileID: -6081931302576143306}
   m_Layer: 0
   m_Name: Laser
   m_TagString: Laser
@@ -69,7 +69,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c7eae2b21f8c0d34eb24474bc2a7ad97, type: 2}
+  - {fileID: 2100000, guid: 4fe88e372d7c2a244b7f2feac97c2bf5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -115,23 +115,6 @@ CapsuleCollider:
   m_Height: 1.1
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3549830451547064745
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7846345671957695032}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c844a9984f41ead48ae1a4f6fd20296c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Bullet
-  speed: 40
-  lifetime: 2
-  bulletHolePrefab: {fileID: 5995475323286290915, guid: 258852c1fed116644bf804345520e904, type: 3}
-  impactEffectPrefab: {fileID: 346639380161105180, guid: a7da3df25993e8d48b81ab66d6a365b9, type: 3}
-  humanBulletHolePrefab: {fileID: 4471539387564334867, guid: 298973a8833c4894ab2a0b4a0a020926, type: 3}
 --- !u!54 &-2316277546622288330
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -159,3 +142,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
+--- !u!114 &-6081931302576143306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7846345671957695032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8de1643b3a47f5142baff143f2c8f002, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Bullet
+  speed: 40
+  lifetime: 2
+  bulletHolePrefab: {fileID: 5995475323286290915, guid: 258852c1fed116644bf804345520e904, type: 3}
+  impactEffectPrefab: {fileID: 346639380161105180, guid: a7da3df25993e8d48b81ab66d6a365b9, type: 3}
+  humanBulletHolePrefab: {fileID: 4471539387564334867, guid: 298973a8833c4894ab2a0b4a0a020926, type: 3}
