@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
     public float baseRunSpeed = 14f;
     public float baseWalkSpeed = 8f;
     public Transform cameraTransform;
-    private bool IsRunning => Input.GetButton("Run");
+    private bool IsRunning => Input.GetKey(KeyCode.LeftShift);
     // JUMP STUFF
     public Transform groundCheck;
     public float groundDistance = 0.3f;
