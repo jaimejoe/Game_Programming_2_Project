@@ -55,7 +55,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.18144329
+      - time: 0.30240548
         functionName: EnableHitbox
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: 31c425ed191d0b44fa931c41a00e77bd, type: 3}
@@ -69,7 +69,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.50859106
+      - time: 0.61580753
         functionName: DisableHitbox
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: 31c425ed191d0b44fa931c41a00e77bd, type: 3}
