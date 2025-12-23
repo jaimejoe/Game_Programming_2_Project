@@ -21,7 +21,6 @@ public class PlayerAttack : MonoBehaviour
     private bool isDashing = false;
     private float dashCooldownEndTime = 0f;
 
-    // Add timer to auto-end attack if combo doesn't continue
     private float attackEndTimer = 0f;
     private bool waitingForCombo = false;
 
@@ -39,7 +38,7 @@ public class PlayerAttack : MonoBehaviour
             canDash = true;
         }
 
-        // Auto-end attack if combo window expires
+       
         if (waitingForCombo && Time.time >= attackEndTimer)
         {
             playerController.EndAttack();
@@ -81,7 +80,7 @@ public class PlayerAttack : MonoBehaviour
             anim.Play("Punch1", 0, 0f);
             playerController.StartAttack();
 
-            // Set timer to auto-end attack if no combo follows
+            
             waitingForCombo = true;
             attackEndTimer = Time.time + maxComboDelay;
             return;
@@ -93,7 +92,7 @@ public class PlayerAttack : MonoBehaviour
         comboContinue = false;
         noOfClicks++;
 
-        // Reset the combo window timer
+        
         waitingForCombo = true;
         attackEndTimer = Time.time + maxComboDelay;
 
@@ -114,18 +113,14 @@ public class PlayerAttack : MonoBehaviour
             comboCooldownEnd = Time.time + cooldownTime;
         }
     }
-
-    // Call this from ANIMATION EVENT at the end of each attack animation
     public void OnAttackAnimationEnd()
     {
-        // Don't end attack if we're waiting for combo continuation
         if (!waitingForCombo)
         {
             playerController.EndAttack();
         }
     }
 
-    // Call this from ANIMATION EVENT at the end of FlyingKick
     public void OnFlyingKickEnd()
     {
         playerController.EndAttack();

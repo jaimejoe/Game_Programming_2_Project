@@ -1,131 +1,108 @@
+using System.Collections;
 using UnityEngine;
 
 public class AIController : MonoBehaviour
 {
     public Transform player;
     public float attackRange = 1.5f;
-    public float attackCooldown = 1f;
-    public float pauseAfterAttack = 0.5f;
+    public float attackCooldown = 1.5f;
+    public float moveSpeed = 2f;
 
-    private UnityEngine.AI.NavMeshAgent agent;
     private Animator anim;
-    private Rigidbody rb;
-    private EnemyHealth enemyHealth;
-    private float nextAttackTime = 0f;
-    private bool isPaused = false;
-    private float pauseEndTime = 0f;
-    private bool isInHitAnimation = false;
     private bool isDead = false;
+    private float nextAttackTime = 0f;
+    private float nextMoveTime = 0f;
+    private Vector3 targetPosition;
 
     void Start()
     {
-        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         anim = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody>();
-        enemyHealth = GetComponent<EnemyHealth>();
 
         if (player == null)
         {
             player = GameObject.FindGameObjectWithTag("Player").transform;
         }
 
-        agent.updateRotation = false;
+        nextAttackTime = Time.time + Random.Range(0f, 2f);
+        PickRandomPosition();
     }
 
     void Update()
     {
         if (player == null || isDead) return;
 
-        // Don't move if currently in hit animation
-        if (isInHitAnimation)
-        {
-            agent.isStopped = true;
-            anim.SetBool("IsWalking", false);
-            return;
-        }
-
-        // Check if we're in pause state after attacking
-        if (isPaused)
-        {
-            if (Time.time >= pauseEndTime)
-            {
-                isPaused = false;
-            }
-            else
-            {
-                agent.isStopped = true;
-                anim.SetBool("IsWalking", false);
-                return;
-            }
-        }
-
         float distance = Vector3.Distance(transform.position, player.position);
 
-        if (distance > attackRange)
+        if (distance <= attackRange)
         {
-            agent.isStopped = false;
-            agent.SetDestination(player.position);
-            anim.SetBool("IsWalking", true);
-        }
-        else
-        {
-            agent.isStopped = true;
             anim.SetBool("IsWalking", false);
 
             if (Time.time >= nextAttackTime)
             {
                 Attack();
-                nextAttackTime = Time.time + attackCooldown;
-                isPaused = true;
-                pauseEndTime = Time.time + pauseAfterAttack;
+                nextAttackTime = Time.time + attackCooldown + Random.Range(-0.5f, 0.5f);
             }
+        }
+        else if (Time.time >= nextMoveTime)
+        {
+            anim.SetBool("IsWalking", true);
+
+            Vector3 moveDirection = (targetPosition - transform.position).normalized;
+            transform.position += moveDirection * moveSpeed * Time.deltaTime;
+
+            if (Vector3.Distance(transform.position, targetPosition) < 0.5f)
+            {
+                PickRandomPosition();
+                nextMoveTime = Time.time + Random.Range(0.5f, 2f);
+            }
+        }
+        else
+        {
+            anim.SetBool("IsWalking", false);
         }
 
         RotateTowardPlayer();
     }
 
-    // Call this from HitDetector when enemy gets hit
+    void PickRandomPosition()
+    {
+        float angle = Random.Range(0f, 360f);
+        float distance = Random.Range(1f, 3f);
+
+        targetPosition = player.position + new Vector3(
+            Mathf.Cos(angle * Mathf.Deg2Rad) * distance,
+            0,
+            Mathf.Sin(angle * Mathf.Deg2Rad) * distance
+        );
+    }
+
+    void Attack()
+    {
+        anim.SetTrigger("Attack");
+        PickRandomPosition();
+        nextMoveTime = Time.time + 0.3f; 
+    }
+
     public void GotHit()
     {
-        if (isInHitAnimation || isDead) return;
-
-        StartCoroutine(HitReaction());
-    }
-
-    System.Collections.IEnumerator HitReaction()
-    {
-        isInHitAnimation = true;
-        agent.isStopped = true;
-
+        if (isDead) return;
         anim.SetTrigger("GotHit");
 
-        // Wait for hit animation to finish
-        yield return new WaitForSeconds(0.5f);
-
-        isInHitAnimation = false;
+        PickRandomPosition();
+        nextMoveTime = Time.time + 0.5f;
     }
 
-    // Called when enemy dies
     public void OnDeath()
     {
         isDead = true;
-
-        // Stop all AI behavior
-        agent.isStopped = true;
-        agent.enabled = false;
-
-        // Disable collider
+        anim.SetBool("IsWalking", false);
         GetComponent<Collider>().enabled = false;
-
-        // Disable this script
         enabled = false;
-
-        Debug.Log("AIController: Enemy is dead, AI disabled");
     }
 
     void RotateTowardPlayer()
     {
-        if (isInHitAnimation || isDead) return;
+        if (isDead) return;
 
         Vector3 direction = (player.position - transform.position).normalized;
         direction.y = 0;
@@ -141,10 +118,5 @@ public class AIController : MonoBehaviour
                 transform.rotation = Quaternion.Euler(0f, -90f, 0f);
             }
         }
-    }
-
-    void Attack()
-    {
-        anim.SetTrigger("Attack");
     }
 }
