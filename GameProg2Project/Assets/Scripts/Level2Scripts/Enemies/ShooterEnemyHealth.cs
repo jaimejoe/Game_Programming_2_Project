@@ -6,12 +6,14 @@ public class ShooterEnemyHealth : MonoBehaviour
     public int MaxHP = 100;
     private Rigidbody rb;
     Animator anim;
+    public GameObject hips;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
+
     }
 
     // Update is called once per frame
@@ -40,8 +42,14 @@ public class ShooterEnemyHealth : MonoBehaviour
 
     void death()
     {
+        //Quaternion targetRotation = Quaternion.Euler(90, transform.rotation.y, transform.rotation.z);
 
-        rb.freezeRotation = false;
+        //Quaternion targetRotation1 = Quaternion.Euler(hips.transform.position.x+70, hips.transform.position.y, hips.transform.position.z);
+        
+        //rb.MoveRotation(Quaternion.RotateTowards(rb.rotation, targetRotation, 90 * Time.deltaTime));
+        //transform.rotation = targetRotation;
+
+        //hips.transform.rotation = targetRotation1;
         //anim.enabled = false;
 
     }
