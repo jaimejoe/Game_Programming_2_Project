@@ -32,7 +32,12 @@ public class EnemyPatrol : MonoBehaviour
     void Update()
     {
         if (EnemyHealth.GetHealth() <= 0)
+        {
+            anim.SetBool("hasDied", true);
+
             return;
+        }
+            
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
@@ -73,12 +78,12 @@ public class EnemyPatrol : MonoBehaviour
         transform.LookAt(player.position);//minor error with how he was made requires this fix
         transform.Rotate(0, 90f, 0);
 
-        if (Vector3.Distance(transform.position, player.position) < 2f)
+        if (Vector3.Distance(transform.position, player.position) < 4f)
         {
             //insert attack here
             anim.SetBool("attack",true);
-            Debug.Log("attack");
+
         }else
-            anim.SetBool("attack", true);
+            anim.SetBool("attack", false);
     }
 }

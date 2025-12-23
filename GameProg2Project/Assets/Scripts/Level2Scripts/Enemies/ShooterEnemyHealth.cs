@@ -5,11 +5,13 @@ public class ShooterEnemyHealth : MonoBehaviour
     public int HP = 100;
     public int MaxHP = 100;
     private Rigidbody rb;
+    Animator anim;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -38,7 +40,9 @@ public class ShooterEnemyHealth : MonoBehaviour
 
     void death()
     {
+
         rb.freezeRotation = false;
+        //anim.enabled = false;
 
     }
     public int GetHealth()
