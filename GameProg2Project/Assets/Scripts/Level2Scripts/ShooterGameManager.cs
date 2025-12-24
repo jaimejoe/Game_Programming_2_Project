@@ -6,6 +6,7 @@ public class ShooterGameManager : MonoBehaviour
 
     public int enemiesAlive = 0;
     public GameObject exitDoor;
+    public int PlayerHealth = 100;
 
     void Awake()
     {
@@ -30,6 +31,14 @@ public class ShooterGameManager : MonoBehaviour
             Debug.Log("ALL ENEMIES DEAD");
             exitDoor.active = true;
             // unlock door / load next level / spawn boss etc
+        }
+    }
+    public void DamagePlayer(int dmg)
+    {
+        PlayerHealth -= dmg;
+        if (PlayerHealth <= 0)
+        {
+
         }
     }
 

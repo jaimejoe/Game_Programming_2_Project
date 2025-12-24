@@ -21,12 +21,14 @@ public class Cactus : MonoBehaviour
 
         if (collision.gameObject.tag == "Player")
         {
-            GameManager.Instance.DamagePlayer(10);
+            GameManager.Instance.HealthDecrease(15);
+            //Debug.Log("awesome ya got hit");
+            Destroy(gameObject);
         }
         else
         {
-
+            Destroy(gameObject,5f);
         }
-        Destroy(gameObject);
+        
     }
 }

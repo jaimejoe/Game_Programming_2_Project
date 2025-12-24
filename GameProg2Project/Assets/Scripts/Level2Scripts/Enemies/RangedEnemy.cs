@@ -21,9 +21,9 @@ public class RangedEnemy : MonoBehaviour
     public GameObject cactusPrefab;
     public GameObject fakeCactus;//its in the cowboy's hand
     public Transform throwPoint;
-    public float throwForce = 10f;
-    public float upwardForce = 6f;
-    public float throwCooldown = 2f;
+    public float throwForce = 20f;
+    public float upwardForce = 8f;
+    public float throwCooldown = 1f;
     public float throwRange = 25f;
 
     //animation stuff

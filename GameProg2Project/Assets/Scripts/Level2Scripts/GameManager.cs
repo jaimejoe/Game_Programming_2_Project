@@ -1,26 +1,38 @@
+using System.Xml.Serialization;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance { get; private set; }
+    public static GameManager Instance;
 
     [SerializeField] private GameObject pauseMenuPanel;
     [SerializeField] private GameObject EndScreenPanel;
     [SerializeField] private GameObject Hud;
-    [SerializeField] private CharacterMovement player;
-    [SerializeField] private Image[] hearts;
+    [SerializeField] private Text HudObjective;
+    [SerializeField] private Text HudEnemyCount;
+    //[SerializeField] private CharacterMovement player;
+    //[SerializeField] private Image[] hearts;
 
-    public float timePassed;
-    public Text endGameScore;
-    public Text timerText;
+    //public float timePassed;
+    //public Text endGameScore;
+    //public Text timerText;
 
-    [Header("Sprite Settings")]
-    [SerializeField] private Sprite EmptyHeart;
-    [SerializeField] private Sprite FullHeart;
-    public int health;
-    private bool isPaused = false;
+    //[Header("Sprite Settings")]
+    //[SerializeField] private Sprite EmptyHeart;
+    //[SerializeField] private Sprite FullHeart;
+    public int PlayerHp = 100;
+    public int PlayerMaxHp = 100;
+    public int CowHp = 600;
+    public int CowHpMax = 600;
+    public bool isPaused = false;
+    public Slider HealthBar;
+    public bool gameOver = false;
+
+    public int totalEnemies = 0;
+    public GameObject Doors;
+
 
     // =============================== Score Board ===================================
 
@@ -31,10 +43,10 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        timePassed = 0f;
+        //timePassed = 0f;
+        //DontDestroyOnLoad(gameObject);
+        HealthBar.value = PlayerHp;
         DontDestroyOnLoad(gameObject);
-        DontDestroyOnLoad(gameObject);
-        health = 3;
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -46,15 +58,14 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        timePassed += Time.deltaTime; //timer
         
-        if (health <= 0)
+        if (PlayerHp <= 0)
         {
-            RestartLevel();
+            GameOverScreen();
         }
 
         // Check if the player presses the "Escape" key (or any key you choose).
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && !gameOver)
         {
             if (isPaused)
             {
@@ -72,23 +83,37 @@ public class GameManager : MonoBehaviour
         score += 50;
         text.text = "Score: "+ score;
     }
+    //Game Over screen
+    void GameOverScreen()
+    {
+        gameOver = true;
+        Time.timeScale = 0f;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        Hud.SetActive(false);
+        pauseMenuPanel.SetActive(false);
+        EndScreenPanel.SetActive(true);
+    }
 
     //Health Decrease
-    public void HealthDecrease()
+    public void HealthDecrease(int dmg)
     {
-        health --;
-        hearts[health].sprite = EmptyHeart;
-        if(health <= 0)
+        PlayerHp-=dmg;
+        HealthBar.value = PlayerHp;
+        if(PlayerHp <= 0)
         {
-            RestartLevel();
+            GameOverScreen();
         }
     }
 
     // This method pauses the game.
     public void PauseGame()
     {
+        Hud.SetActive(false);
         // Show Pause Menu UI
         pauseMenuPanel.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         // Freeze game time
         Time.timeScale = 0f;
         isPaused = true;
@@ -98,9 +123,10 @@ public class GameManager : MonoBehaviour
         // Show End Menu UI
         PauseGame();
         Hud.SetActive(false);
+        pauseMenuPanel.SetActive(false);
         EndScreenPanel.SetActive(true);
-        endGameScore.text = ""+score;
-        timerText.text = timePassed.ToString();
+        //endGameScore.text = ""+score;
+        //timerText.text = timePassed.ToString();
         // Freeze game time
         Time.timeScale = 0f;
         
@@ -109,7 +135,7 @@ public class GameManager : MonoBehaviour
     {
         ResetHealth();
         EndScreenPanel.SetActive(false);
-        SceneManager.LoadScene("Tutorial");
+        SceneManager.LoadScene("Level1");
         ResumeGame();
     }
 
@@ -119,8 +145,11 @@ public class GameManager : MonoBehaviour
         //Debug.Log("Resume button pressed!");
         // Hide Pause Menu UI
         pauseMenuPanel.SetActive(false);
+        Hud.SetActive(true );
         // Unfreeze game time
         Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         // (Optional) Unfreeze audio
         // AudioListener.pause = false;
         isPaused = false;
@@ -131,7 +160,7 @@ public class GameManager : MonoBehaviour
 
         int nextScene = SceneManager.GetActiveScene().buildIndex + 1;
         SceneManager.LoadScene(nextScene);
-        if(nextScene == 4)
+        if(nextScene == 3)
         {
             EndGame();
         }
@@ -142,10 +171,19 @@ public class GameManager : MonoBehaviour
     }
     public void OffMap()
     {
-        HealthDecrease();
+        HealthDecrease(10);
         Scene currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(currentScene.name);
     }
+    public void GameOver()
+    {
+        Time.timeScale = 0f;
+        gameOver = true;
+        Hud.SetActive(false);
+        EndScreenPanel.SetActive(true);
+        
+    }
+
     public void RestartLevel()
     {
         Time.timeScale = 1f;
@@ -160,10 +198,7 @@ public class GameManager : MonoBehaviour
     }
     public void ResetHealth()
     {
-        hearts[1].sprite = FullHeart;
-        hearts[2].sprite = FullHeart;
-        hearts[0].sprite = FullHeart;
-        health = 3;
+        PlayerHp = PlayerMaxHp;
     }
 
     // Optional: a method for quitting the game or returning to the main menu.
@@ -176,4 +211,27 @@ public class GameManager : MonoBehaviour
         // If you have a Main Menu scene, you might do:
         // SceneManager.LoadScene("MainMenu");
     }
+    public void SpawnedEnemy()
+    {
+        HudObjective.text = "Objective: Kill all Cowboys!!!";
+        totalEnemies++;
+        HudEnemyCount.text = "Enemies Remaining: "+totalEnemies;
+    }
+    public void DeadEnemy()
+    {
+
+        totalEnemies--;
+        if(totalEnemies <= 0)
+        {
+            UnlockDoors();
+            HudObjective.text = "Objective Go to the Big Yellow Door";
+        }
+        HudEnemyCount.text = "Enemies Remaining: " + totalEnemies;
+    }
+    private void UnlockDoors()
+    {
+        Doors.SetActive(true);
+    }
+    
+
 }

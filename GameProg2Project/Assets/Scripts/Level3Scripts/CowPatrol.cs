@@ -1,14 +1,14 @@
 using System;
 using UnityEngine;
 
-public class EnemyPatrol : MonoBehaviour
+public class CowPatrol : MonoBehaviour
 {
     public Transform[] points; //patrol points
     public float baseSpeed = 4f;
     public float currentSpeed = 4f;
     private int index = 0;
     Rigidbody rb;
-    public ShooterEnemyHealth EnemyHealth;
+    public CowHp EnemyHealth;
 
     
     //stuff for chasing the player
@@ -16,11 +16,11 @@ public class EnemyPatrol : MonoBehaviour
     public Transform player;
     public float detectionRange = 15f;
     public float stopChaseRange = 25f;
-    public float cooldown = 2f;
+    public float cooldown = 5f;
     bool canAttack = true;
 
     //animation stuff
-    Animator anim;
+    //Animator anim;
     public bool isAlive = true;
 
     //collider
@@ -31,8 +31,8 @@ public class EnemyPatrol : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        EnemyHealth = GetComponent<ShooterEnemyHealth>();
-        anim = GetComponent<Animator>();
+        EnemyHealth = GetComponent<CowHp>();
+        //anim = GetComponent<Animator>();
         collider = GetComponent<Collider>();
         if (player == null)
             player = GameObject.FindGameObjectWithTag("Player").transform;
@@ -48,7 +48,7 @@ public class EnemyPatrol : MonoBehaviour
             rb.constraints = RigidbodyConstraints.None;
             rb.freezeRotation = true;
             //rb.constraints = RigidbodyConstraints.FreezePosition;
-            anim.SetBool("hasDied", true);
+            //anim.SetBool("hasDied", true);
 
             //Destroy(collider);
 
@@ -66,24 +66,8 @@ public class EnemyPatrol : MonoBehaviour
          
         if (isChasing)
             chase();
-        else 
-            patrol();
         
-    }
-    void patrol()
-    {
-        anim.SetFloat("speed", currentSpeed);
-        transform.position = Vector3.MoveTowards(
-                transform.position,
-                points[index].position,
-                currentSpeed * Time.deltaTime
-                );
-        transform.LookAt(points[index].position);
-        //transform.Rotate(0, 90f, 0);
-        if (Vector3.Distance(transform.position, points[index].position) < 0.2f)
-        {
-            index = (index + 1) % points.Length;
-        }
+        
     }
     void resetAttack()// this is called in the animation
     {
@@ -98,9 +82,10 @@ public class EnemyPatrol : MonoBehaviour
     {
         if (!canAttack) return;
         //check if he attacks
-        if (Vector3.Distance(transform.position, player.position) < 3f)
+        if (Vector3.Distance(transform.position, player.position) < 60f)
         {
-            anim.SetTrigger("attack");
+
+            //anim.SetTrigger("attack");
             rb.constraints = RigidbodyConstraints.FreezePosition;
             canAttack = false;
             Invoke("resetAttack", cooldown);
@@ -115,7 +100,7 @@ public class EnemyPatrol : MonoBehaviour
             
 
 
-        anim.SetFloat("speed", currentSpeed * 2);
+        //anim.SetFloat("speed", currentSpeed * 2);
         Vector3 playerPos = new Vector3(player.position.x, player.position.y + 0.5f, player.position.z);
         transform.position = Vector3.MoveTowards(
                 transform.position,

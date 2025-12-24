@@ -1,9 +1,9 @@
 using UnityEngine;
 
-public class ShooterEnemyHealth : MonoBehaviour
+public class CowHp : MonoBehaviour
 {
-    public int HP = 100;
-    public int MaxHP = 100;
+    public int HP = 600;
+    public int MaxHP = 600;
     private Rigidbody rb;
     Animator anim;
     public GameObject hips;
@@ -38,6 +38,7 @@ public class ShooterEnemyHealth : MonoBehaviour
         HP -= damage;
         if(HP <= 0)
         {
+            
             death();
         }
     }
