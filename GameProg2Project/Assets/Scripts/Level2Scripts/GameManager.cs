@@ -160,7 +160,7 @@ public class GameManager : MonoBehaviour
 
         int nextScene = SceneManager.GetActiveScene().buildIndex + 1;
         SceneManager.LoadScene(nextScene);
-        if(nextScene == 3)
+        if(nextScene == 4)
         {
             EndGame();
         }
@@ -215,7 +215,7 @@ public class GameManager : MonoBehaviour
     {
         HudObjective.text = "Objective: Kill all Cowboys!!!";
         totalEnemies++;
-        HudEnemyCount.text = "Enemies Remaining: "+totalEnemies;
+        //HudEnemyCount.text = "Enemies Remaining: "+totalEnemies;
     }
     public void DeadEnemy()
     {
@@ -233,5 +233,6 @@ public class GameManager : MonoBehaviour
         Doors.SetActive(true);
     }
     
+
 
 }
