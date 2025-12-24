@@ -213,7 +213,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 38752921}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f3cb85bdd1583fe45810630aca460fe9, type: 3}
+  m_Script: {fileID: 11500000, guid: 2966bfd3924b3284083f570eadddc9cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KillCounterZone
   doorUnlocks:
@@ -221,16 +221,16 @@ MonoBehaviour:
     doorToBreak: {fileID: 1919691064}
   - killsRequired: 10
     doorToBreak: {fileID: 1205539126}
-  - killsRequired: 20
+  - killsRequired: 15
     doorToBreak: {fileID: 1601234427}
-  enemyPrefab: {fileID: 8235180206269717235, guid: d0030538244bb20478e7681e6fd38046, type: 3}
+  enemyPrefab: {fileID: 448318135285263794, guid: 6aae6b0107a5e3346bf38f64848ac95e, type: 3}
   spawnPoints:
   - {fileID: 1116008661}
   - {fileID: 1532398096}
   - {fileID: 501275534}
   totalEnemiesToSpawn: 20
   maxEnemies: 5
-  spawnDelay: 2
+  spawnDelay: 3
   killCounterText: {fileID: 1903303381}
   enemiesAliveText: {fileID: 997678856}
   nextDoorText: {fileID: 789850969}
@@ -968,7 +968,7 @@ MonoBehaviour:
   maxComboDelay: 1
   dashingTime: 5
   dashingPower: 20
-  dashingCooldown: 1
+  dashingCooldown: 10
 --- !u!114 &608109462
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1496,6 +1496,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.UI.InputSystemUIInputModule
+  m_SendPointerHoverToParent: 1
+  m_MoveRepeatDelay: 0.5
+  m_MoveRepeatRate: 0.1
+  m_XRTrackingOrigin: {fileID: 0}
+  m_ActionsAsset: {fileID: 0}
+  m_PointAction: {fileID: 0}
+  m_MoveAction: {fileID: 0}
+  m_SubmitAction: {fileID: 0}
+  m_CancelAction: {fileID: 0}
+  m_LeftClickAction: {fileID: 0}
+  m_MiddleClickAction: {fileID: 0}
+  m_RightClickAction: {fileID: 0}
+  m_ScrollWheelAction: {fileID: 0}
+  m_TrackedDevicePositionAction: {fileID: 0}
+  m_TrackedDeviceOrientationAction: {fileID: 0}
+  m_DeselectOnBackgroundClick: 1
+  m_PointerBehavior: 0
+  m_CursorLockBehavior: 0
+  m_ScrollDeltaPerTick: 6
 --- !u!114 &815523870
 MonoBehaviour:
   m_ObjectHideFlags: 0
