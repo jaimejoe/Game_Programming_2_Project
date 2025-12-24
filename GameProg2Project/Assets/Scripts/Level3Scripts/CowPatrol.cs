@@ -4,27 +4,27 @@ using UnityEngine;
 public class CowPatrol : MonoBehaviour
 {
     public Transform[] points; //patrol points
-    public float baseSpeed = 4f;
-    public float currentSpeed = 4f;
-    private int index = 0;
+    public float baseSpeed = 8f;
+    public float currentSpeed = 8f;
     Rigidbody rb;
     public CowHp EnemyHealth;
 
-    
+
     //stuff for chasing the player
-    public bool isChasing = false;
+    public bool isCharging = false;
     public Transform player;
-    public float detectionRange = 15f;
-    public float stopChaseRange = 25f;
+    public float detectionRange = 70f;
+    public float stopChaseRange = 70f;
     public float cooldown = 5f;
     bool canAttack = true;
+    private Vector3 targetPlayerPosition;
 
     //animation stuff
-    //Animator anim;
+    Animator anim;
     public bool isAlive = true;
 
     //collider
-    Collider collider;
+    //Collider collider;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -32,88 +32,81 @@ public class CowPatrol : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         EnemyHealth = GetComponent<CowHp>();
-        //anim = GetComponent<Animator>();
-        collider = GetComponent<Collider>();
+        anim = GetComponent<Animator>();
+        //collider = GetComponent<Collider>();
         if (player == null)
             player = GameObject.FindGameObjectWithTag("Player").transform;
+    }
+    private void FixedUpdate()
+    {
+        if (isCharging)
+        {
+            rb.linearVelocity = transform.forward * baseSpeed;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!isAlive) return;
-        if (EnemyHealth.GetHealth() <= 0 && isAlive)
+        if (EnemyHealth.HP <= 0)
         {
             isAlive = false;
-            rb.constraints = RigidbodyConstraints.None;
-            rb.freezeRotation = true;
-            //rb.constraints = RigidbodyConstraints.FreezePosition;
-            //anim.SetBool("hasDied", true);
-
-            //Destroy(collider);
-
-
-            return;
         }
-            
+        if (!isAlive)
+        {
+            anim.SetBool("death", true);
+            GameManager.Instance.NextLevel();
+        }
 
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
-        if(distanceToPlayer <= detectionRange && !isChasing)
-            isChasing = true;
-        else if (isChasing && distanceToPlayer >= stopChaseRange)
-            isChasing = false;
-         
-        if (isChasing)
-            chase();
-        
-        
-    }
-    void resetAttack()// this is called in the animation
-    {
-        if (Vector3.Distance(transform.position, player.position) < 5f && isAlive)
+        if (canAttack && !isCharging)
         {
             
-            GameManager.Instance.HealthDecrease(25);
-        }
-            canAttack = true;
-    }
-    void chase()
-    {
-        if (!canAttack) return;
-        //check if he attacks
-        if (Vector3.Distance(transform.position, player.position) < 60f)
-        {
-
-            //anim.SetTrigger("attack");
-            rb.constraints = RigidbodyConstraints.FreezePosition;
             canAttack = false;
-            Invoke("resetAttack", cooldown);
+            targetPlayerPosition = player.transform.position;
+            Vector3 direction = targetPlayerPosition - transform.position;
+            direction.y = 0f; // keep rotation flat (optional)
+
+            rb.rotation = Quaternion.LookRotation(direction);
+            anim.SetTrigger("buildUp");
+
         }
-        else
-        {
-            rb.constraints = RigidbodyConstraints.None;
-            rb.constraints = RigidbodyConstraints.FreezePositionY;
-            rb.constraints = RigidbodyConstraints.FreezeRotationX;
-            rb.constraints = RigidbodyConstraints.FreezeRotationZ;
-        }
-            
 
-
-        //anim.SetFloat("speed", currentSpeed * 2);
-        Vector3 playerPos = new Vector3(player.position.x, player.position.y + 0.5f, player.position.z);
-        transform.position = Vector3.MoveTowards(
-                transform.position,
-                playerPos,
-                currentSpeed * 2 * Time.deltaTime
-                );
-        transform.LookAt(player.position);
-
-        
     }
 
-    public bool getIsChassing()
+    void Charge()
     {
-        return isChasing;
+        if (!isAlive) return;
+        if (isCharging) return;
+        Debug.Log("WTF");
+        Vector3 direction = (targetPlayerPosition - transform.position).normalized;
+
+        targetPlayerPosition = targetPlayerPosition + direction * 100f;
+
+
+
+        isCharging = true;
+        anim.SetBool("charging", true);
+
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.tag == "Wall")
+        {
+            rb.linearVelocity = Vector3.zero;
+            isCharging = false;
+            anim.SetBool("charging", false);
+        }
+        else if (collision.collider.tag == "Player")
+        {
+            GameManager.Instance.HealthDecrease(45);
+            rb.linearVelocity = Vector3.zero;
+            isCharging = false;
+            anim.SetBool("charging", false);
+        }
+
+    }
+    void resetCanAttack()
+    {
+        canAttack = true;
     }
 }

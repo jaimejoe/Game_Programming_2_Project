@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CowHp : MonoBehaviour
 {
@@ -6,7 +7,8 @@ public class CowHp : MonoBehaviour
     public int MaxHP = 600;
     private Rigidbody rb;
     Animator anim;
-    public GameObject hips;
+    public Slider BossHealthBar;
+    //public GameObject hips;
     bool isAlive = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -36,9 +38,10 @@ public class CowHp : MonoBehaviour
     {
         //Debug.Log("Oww!");
         HP -= damage;
-        if(HP <= 0)
+        BossHealthBar.value = HP;
+        if (HP <= 0)
         {
-            
+             
             death();
         }
     }
@@ -55,6 +58,7 @@ public class CowHp : MonoBehaviour
         //hips.transform.rotation = targetRotation1;
         //anim.enabled = false;
         isAlive = false;
+
         GameManager.Instance.DeadEnemy();
 
     }
